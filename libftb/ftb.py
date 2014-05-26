@@ -23,7 +23,7 @@ def get_pack_url(pack_dict, version=None, server=False):
     pack_id = pack_dict['id']
     if not version:
         version = pack_dict['version']
-    version.replace('.', '_')
+    version = version.replace('.', '_')
     print("Getting URL for ID {} ({}) (server: {})".format(pack_id, version, server))
 
     if server:
