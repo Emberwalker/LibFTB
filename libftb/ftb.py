@@ -1,6 +1,8 @@
 __author__ = 'Arkan'
 
 import urllib.request
+import os.path
+import time
 import xml.etree.ElementTree as ET
 
 import libftb.internal.parser as parser
@@ -9,11 +11,7 @@ CDN_ROOT = "http://ftb.cursecdn.com/FTB2"
 
 
 def get_packs():
-    req = urllib.request.urlopen(__get_static_url("modpacks.xml"))
-    if req.status != 200:
-        raise ConnectionError
-    data = req.readall()
-    root = ET.fromstring(data)
+    root = __get_or_create_cache()
     return parser.packs_xml_to_dict(root)
 
 
@@ -34,6 +32,13 @@ def get_pack_url(pack_dict, version=None, server=False):
         file = pack_dict['url']
 
     return __get_pack_url(pack_id, version, file)
+
+
+def __get_or_create_cache():
+    if not (os.path.isfile('modpacks.xml') and (time.time() - os.path.getmtime('modpacks.xml')) < 3600):
+        print("Updating local copy of modpacks.xml...")
+        urllib.request.urlretrieve(__get_static_url('modpacks.xml'), 'modpacks.xml')
+    return ET.parse('modpacks.xml').getroot()
 
 
 def __get_static_url(file):

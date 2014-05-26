@@ -45,3 +45,6 @@ docs/_build/
 
 # Pycharm
 .idea/
+
+# Project-specific
+modpacks.xml
